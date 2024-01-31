@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RepositoryPatternDemo.Database;
+using RepositoryPatternDemo.Models;
+using RepositoryPatternDemo.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,32 +10,53 @@ namespace RepositoryPatternDemo.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly AppDbContext context;
+        private readonly IProductsRepository repo;
 
-        public ProductsController(AppDbContext context)
+        public ProductsController(IProductsRepository repo)
         {
-            this.context = context;
+            this.repo = repo;
         }
-
 
         // GET: api/<ProductsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Product> Get()
         {
-            return new string[] { "value1", "value2" };
+
+
+
+            ProductsRepository pr = new();
+
+
+
+
+
+
+            return repo.GetProducts();
+
         }
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Product? Get(int id)
         {
-            return "value";
+            return repo.GetProductById(id);
         }
 
         // POST api/<ProductsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IEnumerable<Product> Post(Product newProduct)
         {
+            return repo.AddProduct(newProduct);
+
+            // ------------------------------------------------
+
+            // Kontakta databasen för att lägga till en produkt
+            // * NY * (Transient)
+
+            // Kontakta databasen för att hämta alla produkter
+            // * SAMMA * (Transient)
+
+            // Skicka alla produkter till användaren
         }
 
         // PUT api/<ProductsController>/5
